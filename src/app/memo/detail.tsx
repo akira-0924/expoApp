@@ -1,27 +1,46 @@
 import { View, Text, StyleSheet, ScrollView } from 'react-native'
 import CircleButton from '../../components/CircleButton'
 import Icon from '../../components/Icon'
-import { router } from 'expo-router'
+import { router, useLocalSearchParams } from 'expo-router'
+import { onSnapshot, doc } from 'firebase/firestore'
+import { db, auth } from '../../config'
+import { useState, useEffect } from 'react'
+import { type Memo } from '../../types/type'
 
 const handlePress = (): void => {
   router.push('/memo/edit')
 }
 
 const Detail = (): React.JSX.Element => {
+  const { id } = useLocalSearchParams()
+  console.log(id)
+  const [memo, setMemo] = useState<Memo | null>(null)
+
+  useEffect(() => {
+    if (auth.currentUser === null) {
+      return
+    }
+    const ref = doc(db, `users/${auth.currentUser.uid}/memos`, String(id))
+    const unSubscribe = onSnapshot(ref, (memoDoc) => {
+      console.log(memoDoc.data())
+      const { bodyText, updatedAt } = memoDoc.data() as Memo
+      setMemo({
+        id: memoDoc.id,
+        bodyText,
+        updatedAt
+      })
+    })
+    return unSubscribe
+  }, [])
   return (
     <View style={styles.container}>
       <View style={styles.memoHeader}>
-        <Text style={styles.memoTitle}>買い物リスト</Text>
-        <Text style={styles.memoData}>2024年1月1日 12:00</Text>
+        <Text style={styles.memoTitle} numberOfLines={1}>{ memo?.bodyText}</Text>
+        <Text style={styles.memoData}>{ memo?.updatedAt.toDate().toLocaleString('ja-JP')}</Text>
       </View>
       <ScrollView style={styles.memoBody}>
         <Text style={styles.memoBodyText}>
-          買い物リスト書体やレイアウトなどを確認するために用います。本文用なので使い方を間違えると不自然に見えることもありますので要注意。
-          カタカナ語が苦手な方は「組見本」と呼ぶとよいでしょう。なお、組見本の「組」とは文字組のことです。活字印刷時代の用語だったと思います。このダミーテキストは自由に改変することが出来ます。主に書籍やウェブページなどのデザインを作成する時によく使われます。書体やレイアウトなどを確認するために用います。
-          ダミーテキストはダミー文書やダミー文章とも呼ばれることがあります。カタカナ語が苦手な方は「組見本」と呼ぶとよいでしょう。主に書籍やウェブページなどのデザインを作成する時によく使われます。これは正式な文章の代わりに入れて使うダミーテキストです。
-          買い物リスト書体やレイアウトなどを確認するために用います。本文用なので使い方を間違えると不自然に見えることもありますので要注意。
-          カタカナ語が苦手な方は「組見本」と呼ぶとよいでしょう。なお、組見本の「組」とは文字組のことです。活字印刷時代の用語だったと思います。このダミーテキストは自由に改変することが出来ます。主に書籍やウェブページなどのデザインを作成する時によく使われます。書体やレイアウトなどを確認するために用います。
-          ダミーテキストはダミー文書やダミー文章とも呼ばれることがあります。カタカナ語が苦手な方は「組見本」と呼ぶとよいでしょう。主に書籍やウェブページなどのデザインを作成する時によく使われます。これは正式な文章の代わりに入れて使うダミーテキストです。
+          { memo?.bodyText}
         </Text>
       </ScrollView>
       <CircleButton style={{ top: 60, bottom: 'auto' }} onPress={handlePress}>
@@ -55,10 +74,10 @@ const styles = StyleSheet.create({
     lineHeight: 16
   },
   memoBody: {
-    paddingVertical: 32,
     paddingHorizontal: 24
   },
   memoBodyText: {
+    paddingVertical: 32,
     fontSize: 16,
     lineHeight: 24,
     color: '#000000'
