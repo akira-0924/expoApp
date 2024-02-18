@@ -7,7 +7,7 @@ const Layout = (): React.JSX.Element => {
         backgroundColor: '#5abd34'
       },
       headerTintColor: '#ffffff',
-      headerTitle: 'Sample App',
+      headerTitle: 'Memo App',
       headerTitleStyle: {
         fontSize: 22,
         fontWeight: 'bold'

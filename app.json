@@ -9,27 +9,27 @@
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "resizeMode": "cover",
+      "backgroundColor": "#5abd34"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "jp.mizushimaakira.memoexpoapp",
+      "buildNumber": "1.0.0 "
     },
     "android": {
+      "package": "jp.mizushimaakira.memoexpoapp",
+      "versionCode": 1,
+      "permissions": [], 
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/icon_adaptive_foreground.png",
+        "backgroundImage": "./assets/icon_adaptive_background.png"
       }
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": [
-      "expo-router",
-      "expo-font"
-    ]
+    "plugins": ["expo-router", "expo-font"]
   }
 }
