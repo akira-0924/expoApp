@@ -28,7 +28,6 @@ const handlePress = (id: string, bodyText: string): void => {
 
 const Edit = (): JSX.Element => {
   const id = String(useLocalSearchParams().id)
-  console.log(id)
   const [bodyText, setBodyText] = useState('')
   useEffect(() => {
     if (auth.currentUser === null) {
@@ -37,7 +36,6 @@ const Edit = (): JSX.Element => {
     const ref = doc(db, `users/${auth.currentUser.uid}/memos`, id)
     getDoc(ref)
       .then((docRef) => {
-        console.log(docRef.data())
         const { bodyText } = docRef.data() as Memo
         setBodyText(bodyText)
       })
@@ -52,6 +50,7 @@ const Edit = (): JSX.Element => {
           multiline
           value={bodyText}
           style={styles.input}
+          autoFocus
           onChangeText={(text) => { setBodyText(text) }}
         />
       </View>
