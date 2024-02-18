@@ -7,22 +7,20 @@ import { db, auth } from '../../config'
 import { useState, useEffect } from 'react'
 import { type Memo } from '../../types/type'
 
-const handlePress = (): void => {
-  router.push('/memo/edit')
+const handlePress = (id: string): void => {
+  router.push({ pathname: '/memo/edit', params: { id } })
 }
 
 const Detail = (): React.JSX.Element => {
-  const { id } = useLocalSearchParams()
-  console.log(id)
+  const id = String(useLocalSearchParams().id)
   const [memo, setMemo] = useState<Memo | null>(null)
 
   useEffect(() => {
     if (auth.currentUser === null) {
       return
     }
-    const ref = doc(db, `users/${auth.currentUser.uid}/memos`, String(id))
+    const ref = doc(db, `users/${auth.currentUser.uid}/memos`, id)
     const unSubscribe = onSnapshot(ref, (memoDoc) => {
-      console.log(memoDoc.data())
       const { bodyText, updatedAt } = memoDoc.data() as Memo
       setMemo({
         id: memoDoc.id,
@@ -43,7 +41,7 @@ const Detail = (): React.JSX.Element => {
           { memo?.bodyText}
         </Text>
       </ScrollView>
-      <CircleButton style={{ top: 60, bottom: 'auto' }} onPress={handlePress}>
+      <CircleButton style={{ top: 60, bottom: 'auto' }} onPress={() => { handlePress(id) }}>
         <Icon name="pencil" size={40} color="#ffffff" />
       </CircleButton>
     </View>
